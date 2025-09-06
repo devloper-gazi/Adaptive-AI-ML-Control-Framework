@@ -6,15 +6,88 @@
     <title>Adaptive AI/ML Control Framework</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" xintegrity="sha384-n8MVd4RsNIU0KOVEMeaM8spQKIgvplEQ7ikpBFe7loidvDiTUtblshSFdeIIRgqs" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" xintegrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzYCcm2KEiVAnZN6e4sgQgIXs2G0KHOKdst" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --bg-primary: #F8F7F4;
+            --bg-secondary: #ffffff;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-tertiary: #718096;
+            --border-color: #e2e8f0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --chart-grid: rgba(0, 0, 0, 0.1);
+            --chart-text: #666666;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0F172A;
+            --bg-secondary: #1E293B;
+            --text-primary: #F1F5F9;
+            --text-secondary: #CBD5E1;
+            --text-tertiary: #94A3B8;
+            --border-color: #334155;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --chart-grid: rgba(255, 255, 255, 0.1);
+            --chart-text: #CBD5E1;
+        }
+
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F8F7F4;
-            color: #1a202c;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
         }
+
+        .bg-card {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+        }
+
+        .text-primary { color: var(--text-primary); }
+        .text-secondary { color: var(--text-secondary); }
+        .text-tertiary { color: var(--text-tertiary); }
+        .border-custom { border-color: var(--border-color); }
+
+        /* Theme toggle styles */
+        .theme-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background-color: #CBD5E1;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            background-color: #4B5563;
+        }
+
+        .theme-toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        [data-theme="dark"] .theme-toggle-slider {
+            transform: translateX(30px);
+        }
+
         .nav-item {
             cursor: pointer;
             padding: 8px 16px;
@@ -28,7 +101,7 @@
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
         .nav-item:not(.nav-item-active):hover {
-            background-color: #e0e7ff;
+            background-color: var(--border-color);
         }
         .content-section {
             display: none;
@@ -41,12 +114,16 @@
             padding: 6px 12px;
             border-radius: 6px;
             transition: background-color 0.3s ease;
-            color: #4a5568;
+            color: var(--text-secondary);
             font-weight: 500;
         }
         .sub-nav-item-active {
             background-color: #dbeafe;
             color: #1e40af;
+        }
+        [data-theme="dark"] .sub-nav-item-active {
+            background-color: #1e3a8a;
+            color: #dbeafe;
         }
         .tab-content {
             display: none;
@@ -69,12 +146,12 @@
             }
         }
         pre {
-            background-color: #f3f4f6;
-            border: 1px solid #e5e7eb;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 16px;
             overflow-x: auto;
-            color: #111827;
+            color: var(--text-primary);
             font-size: 0.875rem;
         }
         code {
@@ -85,28 +162,46 @@
             overflow-y: hidden;
             padding: 8px 0;
         }
+
+        /* Special card backgrounds */
+        .israel-card { background-color: #F3E8FF; }
+        .china-card { background-color: #FDE8E8; }
+        .swiss-card { background-color: #EDE9FE; }
+        .uk-card { background-color: #E8F5FF; }
+
+        [data-theme="dark"] .israel-card { background-color: #2D1B47; }
+        [data-theme="dark"] .china-card { background-color: #3D1F1F; }
+        [data-theme="dark"] .swiss-card { background-color: #1E1B3A; }
+        [data-theme="dark"] .uk-card { background-color: #1B2838; }
+
+        /* Card hover effects in dark mode */
+        [data-theme="dark"] .hover\\:shadow-lg:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+        }
     </style>
-    <!-- Chosen Palette: Calm Neutrals with Tech Blue Accent -->
-    <!-- Application Structure Plan: A multi-section SPA with a main top navigation bar (Intro, Architecture, Models, Research). This structure allows users to digest high-level concepts first and then delve into progressively more technical details at their own pace. The 'Models & Algorithms' section uses sub-tabs for specific technologies (LSTM, RL) to organize complex information cleanly. The 'Global Research' section also uses tabs to simulate exploring international findings. This tabbed, non-linear approach is chosen over a long scrollable page to improve user experience, reduce cognitive load, and allow for focused exploration of the dense, technical content. -->
-    <!-- Visualization & Content Choices: 
-    1. Framework Diagram: Info -> Goal: Organize -> Viz: HTML/CSS Diagram -> Interaction: Hover to highlight -> Justification: Provides an immediate, clear overview of the system's components without using restricted SVG.
-    2. Time-Series Chart: Info -> Goal: Change -> Viz: Chart.js Line Chart -> Interaction: Button click to animate prediction -> Justification: Visually demonstrates the LSTM's predictive power in an engaging, interactive manner.
-    3. RL Loop Diagram: Info -> Goal: Organize -> Viz: HTML/CSS Diagram -> Interaction: Hover for tooltips -> Justification: Breaks down the complex RL cycle into understandable, interactive parts.
-    4. Code & Math: Info -> Goal: Inform -> Viz: Styled <pre> blocks & KaTeX rendering -> Interaction: None (static display) -> Justification: Directly fulfills user request for deep technical details in a readable format. KaTeX is used for proper mathematical typesetting.
-    Library/Method: Chart.js for charts, KaTeX for math, all diagrams built with Tailwind CSS. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 </head>
 <body class="antialiased">
 
     <div class="min-h-screen">
-        <header class="bg-white shadow-sm">
+        <header class="bg-card shadow-sm relative">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                <h1 class="text-3xl font-bold text-gray-900">Adaptive AI/ML Control Framework</h1>
-                <p class="mt-1 text-gray-600">An interactive exploration of an advanced architecture for predictive analytics and system optimisation.</p>
+                <!-- Theme Toggle Button -->
+                <div class="absolute top-4 right-4 flex items-center gap-2">
+                    <span class="text-sm text-tertiary">☀️</span>
+                    <div class="theme-toggle" onclick="toggleTheme()">
+                        <div class="theme-toggle-slider">
+                            <span id="theme-icon">☀️</span>
+                        </div>
+                    </div>
+                    <span class="text-sm text-tertiary">🌙</span>
+                </div>
+                
+                <h1 class="text-3xl font-bold text-primary">Adaptive AI/ML Control Framework</h1>
+                <p class="mt-1 text-secondary">An interactive exploration of an advanced architecture for predictive analytics and system optimisation.</p>
             </div>
         </header>
 
-        <nav class="bg-white/50 backdrop-blur-sm sticky top-0 z-10 border-b border-gray-200">
+        <nav class="bg-card shadow-sm sticky top-0 z-10 border-b border-custom">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-center space-x-2 sm:space-x-4 py-3">
                     <div id="nav-intro" class="nav-item nav-item-active">Introduction</div>
@@ -120,78 +215,78 @@
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             
             <section id="content-intro" class="content-section content-section-active">
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-md">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Core Concepts of the Framework</h2>
-                    <p class="text-gray-700 mb-6 leading-relaxed">
+                <div class="bg-card p-6 sm:p-8 rounded-xl shadow-md border border-custom">
+                    <h2 class="text-2xl font-bold text-primary mb-4">Core Concepts of the Framework</h2>
+                    <p class="text-secondary mb-6 leading-relaxed">
                         This section provides a high-level overview of the Adaptive AI/ML Control Framework. The primary goal of this architecture is to create a closed-loop system that continuously learns from incoming data to predict future states and make optimal control decisions. It integrates time-series forecasting with reinforcement learning to dynamically adjust system parameters, ensuring efficiency, stability, and responsiveness in complex, changing environments.
                     </p>
                     <div class="grid grid-cols-1 md:grid-cols-5 gap-8 items-center">
                         <div class="md:col-span-3">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-3">System Flow Diagram</h3>
-                            <div class="border rounded-lg p-6 bg-slate-50">
+                            <h3 class="text-xl font-semibold text-primary mb-3">System Flow Diagram</h3>
+                            <div class="border border-custom rounded-lg p-6 bg-card">
                                 <div class="space-y-4">
                                     <div class="flex items-center space-x-2">
                                         <div class="flex-shrink-0 bg-blue-100 text-blue-800 rounded-lg p-3">
-                                            <span>&#x1F4BE;</span>
+                                            <span>📾</span>
                                         </div>
-                                        <div class="flex-grow p-3 bg-white border rounded-md shadow-sm text-center font-medium">Data Ingestion (Time-Series)</div>
-                                        <div class="text-2xl font-light text-gray-400">&rarr;</div>
+                                        <div class="flex-grow p-3 bg-card border border-custom rounded-md shadow-sm text-center font-medium">Data Ingestion (Time-Series)</div>
+                                        <div class="text-2xl font-light text-tertiary">→</div>
                                     </div>
                                     <div class="flex items-center space-x-2 justify-end">
-                                        <div class="text-2xl font-light text-gray-400 transform -rotate-90 md:rotate-0">&darr;</div>
+                                        <div class="text-2xl font-light text-tertiary transform -rotate-90 md:rotate-0">↓</div>
                                     </div>
                                      <div class="flex items-center space-x-2">
                                         <div class="flex-shrink-0 bg-purple-100 text-purple-800 rounded-lg p-3">
-                                            <span>&#x1F50E;</span>
+                                            <span>🔎</span>
                                         </div>
-                                        <div class="flex-grow p-3 bg-white border rounded-md shadow-sm text-center font-medium">Predictive Model (LSTM)</div>
-                                        <div class="text-2xl font-light text-gray-400">&rarr;</div>
+                                        <div class="flex-grow p-3 bg-card border border-custom rounded-md shadow-sm text-center font-medium">Predictive Model (LSTM)</div>
+                                        <div class="text-2xl font-light text-tertiary">→</div>
                                     </div>
                                     <div class="flex items-center space-x-2 justify-end">
-                                        <div class="text-2xl font-light text-gray-400 transform -rotate-90 md:rotate-0">&darr;</div>
+                                        <div class="text-2xl font-light text-tertiary transform -rotate-90 md:rotate-0">↓</div>
                                     </div>
                                      <div class="flex items-center space-x-2">
                                         <div class="flex-shrink-0 bg-green-100 text-green-800 rounded-lg p-3">
-                                            <span>&#x1F916;</span>
+                                            <span>🤖</span>
                                         </div>
-                                        <div class="flex-grow p-3 bg-white border rounded-md shadow-sm text-center font-medium">Optimisation Engine (RL)</div>
-                                        <div class="text-2xl font-light text-gray-400">&rarr;</div>
+                                        <div class="flex-grow p-3 bg-card border border-custom rounded-md shadow-sm text-center font-medium">Optimisation Engine (RL)</div>
+                                        <div class="text-2xl font-light text-tertiary">→</div>
                                     </div>
                                      <div class="flex items-center space-x-2 justify-end">
-                                        <div class="text-2xl font-light text-gray-400 transform -rotate-90 md:rotate-0">&darr;</div>
+                                        <div class="text-2xl font-light text-tertiary transform -rotate-90 md:rotate-0">↓</div>
                                     </div>
                                      <div class="flex items-center space-x-2">
                                         <div class="flex-shrink-0 bg-yellow-100 text-yellow-800 rounded-lg p-3">
-                                            <span>&#x1F527;</span>
+                                            <span>🔧</span>
                                         </div>
-                                        <div class="flex-grow p-3 bg-white border rounded-md shadow-sm text-center font-medium">Control System Action</div>
-                                        <div class="text-2xl font-light text-gray-400">&rarr;</div>
+                                        <div class="flex-grow p-3 bg-card border border-custom rounded-md shadow-sm text-center font-medium">Control System Action</div>
+                                        <div class="text-2xl font-light text-tertiary">→</div>
                                     </div>
                                     <div class="flex items-center space-x-2 justify-end">
-                                        <div class="text-2xl font-light text-gray-400 transform -rotate-90 md:rotate-0">&darr;</div>
+                                        <div class="text-2xl font-light text-tertiary transform -rotate-90 md:rotate-0">↓</div>
                                     </div>
                                      <div class="flex items-center space-x-2">
                                         <div class="flex-shrink-0 bg-red-100 text-red-800 rounded-lg p-3">
-                                            <span>&#x1F3AF;</span>
+                                            <span>🎯</span>
                                         </div>
-                                        <div class="flex-grow p-3 bg-white border rounded-md shadow-sm text-center font-medium">Environment Feedback</div>
-                                        <div class="text-2xl font-light text-gray-400">&#x21BA;</div>
+                                        <div class="flex-grow p-3 bg-card border border-custom rounded-md shadow-sm text-center font-medium">Environment Feedback</div>
+                                        <div class="text-2xl font-light text-tertiary">↺</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="md:col-span-2 space-y-4">
                             <div>
-                                <h3 class="font-semibold text-lg text-gray-800">Predictive Analytics</h3>
-                                <p class="text-gray-600">Utilises Long Short-Term Memory (LSTM) networks to forecast future system states from historical time-series data, anticipating trends and potential anomalies.</p>
+                                <h3 class="font-semibold text-lg text-primary">Predictive Analytics</h3>
+                                <p class="text-secondary">Utilises Long Short-Term Memory (LSTM) networks to forecast future system states from historical time-series data, anticipating trends and potential anomalies.</p>
                             </div>
                             <div>
-                                <h3 class="font-semibold text-lg text-gray-800">Dynamic Optimisation</h3>
-                                <p class="text-gray-600">Employs Reinforcement Learning (RL) to determine the best sequence of actions. The RL agent learns a policy to maximize a cumulative reward, such as energy efficiency or output quality.</p>
+                                <h3 class="font-semibold text-lg text-primary">Dynamic Optimisation</h3>
+                                <p class="text-secondary">Employs Reinforcement Learning (RL) to determine the best sequence of actions. The RL agent learns a policy to maximize a cumulative reward, such as energy efficiency or output quality.</p>
                             </div>
                             <div>
-                                <h3 class="font-semibold text-lg text-gray-800">Adaptive Control</h3>
-                                <p class="text-gray-600">The combination of prediction and optimisation allows the system to adapt its control strategy in real-time, moving beyond static, rule-based systems to a truly intelligent and autonomous operation.</p>
+                                <h3 class="font-semibold text-lg text-primary">Adaptive Control</h3>
+                                <p class="text-secondary">The combination of prediction and optimisation allows the system to adapt its control strategy in real-time, moving beyond static, rule-based systems to a truly intelligent and autonomous operation.</p>
                             </div>
                         </div>
                     </div>
@@ -199,47 +294,47 @@
             </section>
 
             <section id="content-architecture" class="content-section">
-                 <div class="bg-white p-6 sm:p-8 rounded-xl shadow-md">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Architectural Deep Dive</h2>
-                    <p class="text-gray-700 mb-6 leading-relaxed">
+                 <div class="bg-card p-6 sm:p-8 rounded-xl shadow-md border border-custom">
+                    <h2 class="text-2xl font-bold text-primary mb-4">Architectural Deep Dive</h2>
+                    <p class="text-secondary mb-6 leading-relaxed">
                         The framework's architecture is modular, comprising four distinct stages that form the closed-loop control system. Each component is designed for high performance and scalability, ensuring that the system can handle large volumes of data and complex decision-making processes. Explore each component below to understand its specific role and function within the overall architecture.
                     </p>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="border rounded-lg p-6 bg-slate-50 hover:shadow-lg transition-shadow">
+                        <div class="border border-custom rounded-lg p-6 bg-card hover:shadow-lg transition-shadow">
                             <h3 class="text-xl font-semibold text-blue-800 mb-2">1. Data Ingestion Layer</h3>
-                            <p class="text-gray-600">This layer is responsible for collecting, pre-processing, and normalising raw time-series data from various sensors and system logs. It ensures data quality and consistency, preparing it for the predictive model. Key steps include noise filtering, handling missing values, and feature scaling.</p>
+                            <p class="text-secondary">This layer is responsible for collecting, pre-processing, and normalising raw time-series data from various sensors and system logs. It ensures data quality and consistency, preparing it for the predictive model. Key steps include noise filtering, handling missing values, and feature scaling.</p>
                         </div>
-                        <div class="border rounded-lg p-6 bg-slate-50 hover:shadow-lg transition-shadow">
+                        <div class="border border-custom rounded-lg p-6 bg-card hover:shadow-lg transition-shadow">
                             <h3 class="text-xl font-semibold text-purple-800 mb-2">2. Predictive Model Layer</h3>
-                            <p class="text-gray-600">At the core of this layer is an LSTM neural network. It takes the prepared time-series data as input and generates predictions for future system states over a defined horizon. These predictions form the basis for the optimisation engine's decision-making process, providing a forecast of the environment's future behavior.</p>
+                            <p class="text-secondary">At the core of this layer is an LSTM neural network. It takes the prepared time-series data as input and generates predictions for future system states over a defined horizon. These predictions form the basis for the optimisation engine's decision-making process, providing a forecast of the environment's future behavior.</p>
                         </div>
-                        <div class="border rounded-lg p-6 bg-slate-50 hover:shadow-lg transition-shadow">
+                        <div class="border border-custom rounded-lg p-6 bg-card hover:shadow-lg transition-shadow">
                             <h3 class="text-xl font-semibold text-green-800 mb-2">3. Optimisation Engine Layer</h3>
-                            <p class="text-gray-600">This layer uses a Reinforcement Learning agent (e.g., Q-learning or a policy gradient method). The agent treats the predicted future states as its environment and explores various action sequences to find a policy that maximizes long-term rewards. The output is an optimal action or set of control parameters.</p>
+                            <p class="text-secondary">This layer uses a Reinforcement Learning agent (e.g., Q-learning or a policy gradient method). The agent treats the predicted future states as its environment and explores various action sequences to find a policy that maximizes long-term rewards. The output is an optimal action or set of control parameters.</p>
                         </div>
-                        <div class="border rounded-lg p-6 bg-slate-50 hover:shadow-lg transition-shadow">
+                        <div class="border border-custom rounded-lg p-6 bg-card hover:shadow-lg transition-shadow">
                             <h3 class="text-xl font-semibold text-yellow-800 mb-2">4. Control & Feedback Layer</h3>
-                            <p class="text-gray-600">The optimal action determined by the RL agent is translated into a command and sent to the physical or simulated system. The resulting change in the system's state is then measured, and this new data is fed back into the Ingestion Layer, closing the loop and allowing the system to continuously learn and adapt from its own actions.</p>
+                            <p class="text-secondary">The optimal action determined by the RL agent is translated into a command and sent to the physical or simulated system. The resulting change in the system's state is then measured, and this new data is fed back into the Ingestion Layer, closing the loop and allowing the system to continuously learn and adapt from its own actions.</p>
                         </div>
                     </div>
                 </div>
             </section>
 
             <section id="content-models" class="content-section">
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-md">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Models & Algorithms</h2>
-                    <p class="text-gray-700 mb-6 leading-relaxed">
+                <div class="bg-card p-6 sm:p-8 rounded-xl shadow-md border border-custom">
+                    <h2 class="text-2xl font-bold text-primary mb-4">Models & Algorithms</h2>
+                    <p class="text-secondary mb-6 leading-relaxed">
                         This section provides a technical examination of the core machine learning models powering the framework. Here you will find detailed explanations, mathematical formulations, interactive visualizations, and low-level code examples for both the LSTM network used for prediction and the Reinforcement Learning algorithms used for optimization.
                     </p>
 
-                    <div class="flex items-center justify-center border-b border-gray-200 mb-6">
+                    <div class="flex items-center justify-center border-b border-custom mb-6">
                         <div id="sub-nav-lstm" class="sub-nav-item sub-nav-item-active">LSTM for Prediction</div>
                         <div id="sub-nav-rl" class="sub-nav-item">Reinforcement Learning</div>
                     </div>
 
                     <div id="tab-content-lstm" class="tab-content tab-content-active">
                         <h3 class="text-xl font-semibold mb-4 text-purple-800">Long Short-Term Memory (LSTM) Networks</h3>
-                        <p class="mb-4">LSTMs are a type of Recurrent Neural Network (RNN) specifically designed to handle long-term dependencies in sequential data. This makes them ideal for time-series forecasting. Unlike standard RNNs, LSTMs have a "memory cell" that can maintain information over long periods, controlled by three "gates": the input gate, forget gate, and output gate.</p>
+                        <p class="mb-4 text-secondary">LSTMs are a type of Recurrent Neural Network (RNN) specifically designed to handle long-term dependencies in sequential data. This makes them ideal for time-series forecasting. Unlike standard RNNs, LSTMs have a "memory cell" that can maintain information over long periods, controlled by three "gates": the input gate, forget gate, and output gate.</p>
                         <div class="chart-container mb-6">
                             <canvas id="lstmChart"></canvas>
                         </div>
@@ -248,7 +343,7 @@
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
-                                <h4 class="font-semibold text-lg mb-2">Core LSTM Equations</h4>
+                                <h4 class="font-semibold text-lg mb-2 text-primary">Core LSTM Equations</h4>
                                 <div class="space-y-4 text-sm">
                                     <div id="forget-gate"></div>
                                     <div id="input-gate"></div>
@@ -257,7 +352,7 @@
                                 </div>
                             </div>
                             <div>
-                                <h4 class="font-semibold text-lg mb-2">LSTM Cell Forward Pass (C++)</h4>
+                                <h4 class="font-semibold text-lg mb-2 text-primary">LSTM Cell Forward Pass (C++)</h4>
                                 <pre><code class="language-cpp">
 // Simplified C++ implementation for a single LSTM cell forward pass
 #include &lt;vector&gt;
@@ -312,37 +407,37 @@ struct LstmCell {
 
                     <div id="tab-content-rl" class="tab-content">
                         <h3 class="text-xl font-semibold mb-4 text-green-800">Reinforcement Learning (RL)</h3>
-                        <p class="mb-4">Reinforcement Learning is a paradigm of machine learning where an "agent" learns to make decisions by performing actions in an "environment" to maximize a cumulative "reward". The agent learns from the consequences of its actions, rather than from being explicitly taught. This is ideal for control problems where the optimal strategy is not known beforehand.</p>
+                        <p class="mb-4 text-secondary">Reinforcement Learning is a paradigm of machine learning where an "agent" learns to make decisions by performing actions in an "environment" to maximize a cumulative "reward". The agent learns from the consequences of its actions, rather than from being explicitly taught. This is ideal for control problems where the optimal strategy is not known beforehand.</p>
                         
-                        <div class="my-6 p-6 border rounded-lg bg-slate-50">
-                             <h4 class="font-semibold text-lg mb-4 text-center">The RL Interaction Loop</h4>
+                        <div class="my-6 p-6 border border-custom rounded-lg bg-card">
+                             <h4 class="font-semibold text-lg mb-4 text-center text-primary">The RL Interaction Loop</h4>
                             <div class="flex flex-col md:flex-row items-center justify-around space-y-4 md:space-y-0 md:space-x-4">
-                                <div class="text-center p-4 bg-white rounded-lg shadow-md">
+                                <div class="text-center p-4 bg-card rounded-lg shadow-md border border-custom">
                                     <div class="text-4xl">🤖</div><div class="font-bold mt-1">Agent</div>
                                 </div>
                                 <div class="flex flex-col items-center">
-                                    <span class="font-medium">Action (A)</span>
-                                    <span class="text-3xl text-gray-500">&rarr;</span>
+                                    <span class="font-medium text-secondary">Action (A)</span>
+                                    <span class="text-3xl text-tertiary">→</span>
                                 </div>
-                                <div class="text-center p-4 bg-white rounded-lg shadow-md">
+                                <div class="text-center p-4 bg-card rounded-lg shadow-md border border-custom">
                                     <div class="text-4xl">🌍</div><div class="font-bold mt-1">Environment</div>
                                 </div>
                                 <div class="flex flex-col items-center">
-                                    <span class="font-medium">State (S), Reward (R)</span>
-                                    <span class="text-3xl text-gray-500">&larr;</span>
+                                    <span class="font-medium text-secondary">State (S), Reward (R)</span>
+                                    <span class="text-3xl text-tertiary">←</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
-                                <h4 class="font-semibold text-lg mb-2">The Bellman Equation</h4>
-                                <p class="mb-4 text-sm text-gray-600">The core of many RL algorithms is the Bellman equation. It defines the value of being in a certain state by relating it to the values of subsequent states. For Q-learning, it defines the value of taking an action in a state:</p>
+                                <h4 class="font-semibold text-lg mb-2 text-primary">The Bellman Equation</h4>
+                                <p class="mb-4 text-sm text-secondary">The core of many RL algorithms is the Bellman equation. It defines the value of being in a certain state by relating it to the values of subsequent states. For Q-learning, it defines the value of taking an action in a state:</p>
                                 <div id="bellman-eq"></div>
-                                <p class="mt-4 text-sm text-gray-600">Where <span class="font-mono">γ</span> is the discount factor, which balances immediate and future rewards.</p>
+                                <p class="mt-4 text-sm text-secondary">Where <span class="font-mono">γ</span> is the discount factor, which balances immediate and future rewards.</p>
                             </div>
                             <div>
-                                <h4 class="font-semibold text-lg mb-2">Q-Table Update (C)</h4>
+                                <h4 class="font-semibold text-lg mb-2 text-primary">Q-Table Update (C)</h4>
                                 <pre><code class="language-c">
 // Simplified C implementation for a single Q-learning update step.
 #include &lt;stdio.h&gt;
@@ -393,87 +488,171 @@ void updateQ_table(int state, int action, double reward, int next_state) {
             </section>
 
             <section id="content-research" class="content-section">
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-md">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Global Research & Applications</h2>
-                    <p class="text-gray-700 mb-6 leading-relaxed">
-                        The principles of adaptive AI/ML control are being explored and applied globally. This section highlights relevant research and applications from leading institutions and companies in key technology hubs. The information is presented in the local language to reflect the source, with an English translation available.
+                <div class="bg-card p-6 sm:p-8 rounded-xl shadow-md border border-custom">
+                    <h2 class="text-2xl font-bold text-primary mb-4">Comparative Global Research Analysis</h2>
+                    <p class="text-secondary mb-6 leading-relaxed">
+                        The principles of adaptive AI/ML control are being explored and applied globally across diverse domains. This section compares how leading institutions in different countries are advancing this technology. Use the dropdown to explore different metrics and understand each nation's unique strengths and applications.
                     </p>
 
-                    <div class="flex items-center justify-between border-b border-gray-200 mb-6">
-                         <div class="flex items-center space-x-2 overflow-x-auto pb-2">
-                            <div id="sub-nav-il" class="sub-nav-item sub-nav-item-active">Israel</div>
-                            <div id="sub-nav-cn" class="sub-nav-item">China</div>
-                            <div id="sub-nav-ch" class="sub-nav-item">Switzerland</div>
-                            <div id="sub-nav-uk" class="sub-nav-item">United Kingdom</div>
+                    <div class="max-w-4xl mx-auto bg-card p-6 rounded-lg shadow-md border border-custom">
+                        <div class="flex justify-center mb-6">
+                            <select id="metric-selector" class="block w-full md:w-1/3 p-2 border border-custom rounded-md shadow-sm bg-card text-primary focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="complexity">Implementation Complexity (1-10)</option>
+                                <option value="maturity">Technology Maturity (Years)</option>
+                                <option value="investment">Research Investment (Score)</option>
+                                <option value="applications">Application Diversity (Count)</option>
+                            </select>
                         </div>
-                        <div class="flex items-center space-x-2 flex-shrink-0 pl-4">
-                            <span class="text-sm font-medium text-gray-600">Translate</span>
-                            <label for="translation-toggle" class="inline-flex items-center cursor-pointer">
-                              <span class="relative">
-                                <input type="checkbox" id="translation-toggle" class="sr-only peer">
-                                <div class="w-10 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                              </span>
-                            </label>
+                        <div class="chart-container">
+                            <canvas id="countryBarChart"></canvas>
                         </div>
                     </div>
 
-                    <div id="tab-content-il" class="tab-content tab-content-active">
-                        <h3 class="text-xl font-semibold mb-1">Source: Weizmann Institute of Science AI Lab</h3>
-                        <p class="text-sm text-gray-500 mb-4">Application Area: Autonomous Drone Swarm Coordination</p>
-                        <div class="p-4 border rounded-lg bg-slate-50">
-                            <p class="lang-original text-lg" lang="he" dir="rtl">שימוש בלמידת חיזוק עמוקה לתיאום נחילי רחפנים אוטונומיים במשימות חיפוש והצלה. המודל מאפשר לרחפנים ללמוד אסטרטגיות שיתוף פעולה אדפטיביות בזמן אמת, תוך התחשבות במצבי סוללה משתנים ותנאי סביבה דינמיים, כדי למקסם את כיסוי השטח.</p>
-                            <p class="lang-translation text-gray-700 mt-2 hidden">Using deep reinforcement learning to coordinate autonomous drone swarms in search and rescue missions. The model allows drones to learn adaptive collaboration strategies in real-time, considering variable battery states and dynamic environmental conditions to maximize area coverage.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+                        <div class="israel-card p-6 rounded-lg shadow-md border border-custom">
+                            <h3 class="text-xl font-bold text-primary mb-3 flex items-center">
+                                <span class="mr-2 text-2xl">🇮🇱</span> Israel
+                            </h3>
+                            <p class="font-semibold text-purple-700 dark:text-purple-300 mb-3">Focus: Autonomous Systems</p>
+                            <ul class="list-disc list-inside text-secondary space-y-2">
+                                <li>Leading in drone swarm coordination using deep RL</li>
+                                <li>Real-time adaptive strategies for search & rescue missions</li>
+                                <li>Integration with defense technology ecosystem</li>
+                                <li>Strong academic-industry collaboration (Weizmann Institute)</li>
+                            </ul>
+                        </div>
+                        <div class="china-card p-6 rounded-lg shadow-md border border-custom">
+                            <h3 class="text-xl font-bold text-primary mb-3 flex items-center">
+                                <span class="mr-2 text-2xl">🇨🇳</span> China
+                            </h3>
+                            <p class="font-semibold text-red-700 dark:text-red-300 mb-3">Focus: Smart Infrastructure</p>
+                            <ul class="list-disc list-inside text-secondary space-y-2">
+                                <li>LSTM-RL hybrid models for smart grid management</li>
+                                <li>Dynamic energy distribution for renewable sources</li>
+                                <li>Large-scale deployment in urban environments</li>
+                                <li>State-backed research initiatives (Tsinghua University)</li>
+                            </ul>
+                        </div>
+                        <div class="swiss-card p-6 rounded-lg shadow-md border border-custom">
+                            <h3 class="text-xl font-bold text-primary mb-3 flex items-center">
+                                <span class="mr-2 text-2xl">🇨🇭</span> Switzerland
+                            </h3>
+                            <p class="font-semibold text-indigo-700 dark:text-indigo-300 mb-3">Focus: Precision Manufacturing</p>
+                            <ul class="list-disc list-inside text-secondary space-y-2">
+                                <li>Adaptive control for sub-millimeter accuracy robotics</li>
+                                <li>Predictive models for thermal expansion compensation</li>
+                                <li>Tool wear prediction and trajectory optimization</li>
+                                <li>World-class research facilities (ETH Zürich)</li>
+                            </ul>
+                        </div>
+                        <div class="uk-card p-6 rounded-lg shadow-md border border-custom">
+                            <h3 class="text-xl font-bold text-primary mb-3 flex items-center">
+                                <span class="mr-2 text-2xl">🇬🇧</span> United Kingdom
+                            </h3>
+                            <p class="font-semibold text-blue-700 dark:text-blue-300 mb-3">Focus: Healthcare Innovation</p>
+                            <ul class="list-disc list-inside text-secondary space-y-2">
+                                <li>Automated insulin delivery for diabetes management</li>
+                                <li>LSTM blood glucose prediction models</li>
+                                <li>RL-based personalized dosage optimization</li>
+                                <li>Leading medical AI research (Cambridge University)</li>
+                            </ul>
                         </div>
                     </div>
-
-                    <div id="tab-content-cn" class="tab-content">
-                        <h3 class="text-xl font-semibold mb-1">Source: Tsinghua University, Institute for AI Industry Research</h3>
-                        <p class="text-sm text-gray-500 mb-4">Application Area: Smart Grid Energy Management</p>
-                        <div class="p-4 border rounded-lg bg-slate-50">
-                            <p class="lang-original text-lg" lang="zh">应用基于LSTM和强化学习的混合模型对智能电网的能源需求进行预测和调度。该框架能够动态调整能源分配策略，以应对可再生能源（如太阳能和风能）的波动性，从而提高电网的稳定性和效率。</p>
-                            <p class="lang-translation text-gray-700 mt-2 hidden">Application of a hybrid model based on LSTM and reinforcement learning for energy demand prediction and scheduling in smart grids. The framework can dynamically adjust energy distribution strategies to cope with the volatility of renewable energy sources (like solar and wind), thereby improving grid stability and efficiency.</p>
-                        </div>
-                    </div>
-                    
-                    <div id="tab-content-ch" class="tab-content">
-                        <h3 class="text-xl font-semibold mb-1">Source: ETH Zürich, Automatic Control Laboratory</h3>
-                        <p class="text-sm text-gray-500 mb-4">Application Area: High-Precision Manufacturing Robotics</p>
-                        <div class="p-4 border rounded-lg bg-slate-50">
-                            <p class="lang-original text-lg" lang="de">Implementierung eines adaptiven Regelungsrahmens für Roboterarme in der Präzisionsfertigung. Das System nutzt prädiktive Modelle, um thermische Ausdehnung und Werkzeugverschleiss vorherzusagen, und ein RL-Agent passt die Roboterbahn kontinuierlich an, um eine Genauigkeit im Sub-Millimeter-Bereich aufrechtzuerhalten.</p>
-                            <p class="lang-translation text-gray-700 mt-2 hidden">Implementation of an adaptive control framework for robotic arms in precision manufacturing. The system uses predictive models to anticipate thermal expansion and tool wear, and an RL agent continuously adjusts the robot's trajectory to maintain sub-millimeter accuracy.</p>
-                        </div>
-                    </div>
-
-                    <div id="tab-content-uk" class="tab-content">
-                        <h3 class="text-xl font-semibold mb-1">Source: University of Cambridge, Machine Intelligence Laboratory</h3>
-                        <p class="text-sm text-gray-500 mb-4">Application Area: Personalized Medicine Dosage Control</p>
-                        <div class="p-4 border rounded-lg bg-slate-50">
-                            <p class="lang-original text-lg" lang="en">Developing a control framework for automated insulin delivery systems in Type 1 diabetes management. An LSTM model predicts future blood glucose levels based on sensor data and meal information, while an RL agent determines optimal insulin infusion rates, creating a personalized and adaptive artificial pancreas.</p>
-                            <p class="lang-translation text-gray-700 mt-2 hidden">Developing a control framework for automated insulin delivery systems in Type 1 diabetes management. An LSTM model predicts future blood glucose levels based on sensor data and meal information, while an RL agent determines optimal insulin infusion rates, creating a personalized and adaptive artificial pancreas.</p>
-                        </div>
-                    </div>
-
                 </div>
             </section>
         </main>
     </div>
 
     <script>
+        // Theme management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            updateChartsTheme(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-icon');
+            icon.textContent = theme === 'light' ? '☀️' : '🌙';
+        }
+
+        function updateChartsTheme(theme) {
+            const isDark = theme === 'dark';
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            const textColor = isDark ? '#CBD5E1' : '#666666';
+
+            if (window.lstmChart) {
+                window.lstmChart.options.scales.x.grid.color = gridColor;
+                window.lstmChart.options.scales.y.grid.color = gridColor;
+                window.lstmChart.options.scales.x.ticks.color = textColor;
+                window.lstmChart.options.scales.y.ticks.color = textColor;
+                window.lstmChart.options.plugins.title.color = textColor;
+                window.lstmChart.options.plugins.legend.labels.color = textColor;
+                window.lstmChart.update();
+            }
+
+            if (window.countryBarChart) {
+                window.countryBarChart.options.scales.x.grid.color = gridColor;
+                window.countryBarChart.options.scales.y.grid.color = gridColor;
+                window.countryBarChart.options.scales.x.ticks.color = textColor;
+                window.countryBarChart.options.scales.y.ticks.color = textColor;
+                window.countryBarChart.update();
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
+            initTheme();
+            
             const appState = {
                 activeNav: 'intro',
-                activeModelTab: 'lstm',
-                activeResearchTab: 'il'
+                activeModelTab: 'lstm'
             };
 
             const navItems = document.querySelectorAll('.nav-item');
             const contentSections = document.querySelectorAll('.content-section');
             const modelSubNavItems = document.querySelectorAll('#content-models .sub-nav-item');
             const modelTabContents = document.querySelectorAll('#content-models .tab-content');
-            const researchSubNavItems = document.querySelectorAll('#content-research .sub-nav-item');
-            const researchTabContents = document.querySelectorAll('#content-research .tab-content');
-            
-            const translationToggle = document.getElementById('translation-toggle');
+
+            // Country comparison data
+            const countryData = {
+                complexity: {
+                    label: 'Implementation Complexity (1-10)',
+                    data: [8.5, 7.2, 9.1, 7.8],
+                    backgroundColor: ['#B08BBB', '#E493B3', '#8E7AB5', '#6BA3D9']
+                },
+                maturity: {
+                    label: 'Technology Maturity (Years)',
+                    data: [6, 4, 7, 5],
+                    backgroundColor: ['#B08BBB', '#E493B3', '#8E7AB5', '#6BA3D9']
+                },
+                investment: {
+                    label: 'Research Investment (Score)',
+                    data: [8, 9, 7, 6],
+                    backgroundColor: ['#B08BBB', '#E493B3', '#8E7AB5', '#6BA3D9']
+                },
+                applications: {
+                    label: 'Application Diversity (Count)',
+                    data: [12, 15, 8, 10],
+                    backgroundColor: ['#B08BBB', '#E493B3', '#8E7AB5', '#6BA3D9']
+                }
+            };
+
+            function getChartColors() {
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                return {
+                    grid: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+                    text: isDark ? '#CBD5E1' : '#666666'
+                };
+            }
 
             function updateNav() {
                 navItems.forEach(item => {
@@ -502,15 +681,6 @@ void updateQ_table(int state, int action, double reward, int next_state) {
                 });
             }
 
-            function updateResearchTabs() {
-                researchSubNavItems.forEach(item => {
-                    item.classList.toggle('sub-nav-item-active', item.id === `sub-nav-${appState.activeResearchTab}`);
-                });
-                researchTabContents.forEach(content => {
-                    content.classList.toggle('tab-content-active', content.id === `tab-content-${appState.activeResearchTab}`);
-                });
-            }
-
             navItems.forEach(item => {
                 item.addEventListener('click', () => {
                     appState.activeNav = item.id.split('-')[1];
@@ -525,30 +695,15 @@ void updateQ_table(int state, int action, double reward, int next_state) {
                 });
             });
 
-            researchSubNavItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    appState.activeResearchTab = item.id.split('-')[2];
-                    updateResearchTabs();
-                });
-            });
-            
-            translationToggle.addEventListener('change', (event) => {
-                const showTranslation = event.target.checked;
-                document.querySelectorAll('.lang-original').forEach(el => {
-                    el.classList.toggle('hidden', showTranslation);
-                });
-                document.querySelectorAll('.lang-translation').forEach(el => {
-                    el.classList.toggle('hidden', !showTranslation);
-                });
-            });
-
-
+            // Initialize charts
             const actualData = [12, 19, 3, 5, 2, 3, 7, 8, 11, 14, 13, 10, 15, 18, 17, 16, 20, 22, 21, 19];
             const predictionData = [19.5, 17.5, 16.5, 18, 21, 22.5];
             const labels = Array.from({ length: actualData.length + predictionData.length }, (_, i) => `T${i + 1}`);
 
+            const colors = getChartColors();
+            
             const chartCtx = document.getElementById('lstmChart').getContext('2d');
-            const lstmChart = new Chart(chartCtx, {
+            window.lstmChart = new Chart(chartCtx, {
                 type: 'line',
                 data: {
                     labels: labels,
@@ -566,22 +721,76 @@ void updateQ_table(int state, int action, double reward, int next_state) {
                     scales: {
                         y: {
                             beginAtZero: true,
-                             grid: { color: '#e5e7eb' }
+                            grid: { color: colors.grid },
+                            ticks: { color: colors.text }
                         },
                         x: {
-                             grid: { color: '#e5e7eb' }
+                            grid: { color: colors.grid },
+                            ticks: { color: colors.text }
                         }
                     },
                     plugins: {
-                        legend: { position: 'top' },
-                        title: { display: true, text: 'System Performance Over Time' }
+                        legend: { 
+                            position: 'top',
+                            labels: { color: colors.text }
+                        },
+                        title: { 
+                            display: true, 
+                            text: 'System Performance Over Time',
+                            color: colors.text
+                        }
                     }
                 }
             });
 
+            // Country comparison chart
+            const barCtx = document.getElementById('countryBarChart').getContext('2d');
+            window.countryBarChart = new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Israel', 'China', 'Switzerland', 'UK'],
+                    datasets: [{
+                        label: countryData.complexity.label,
+                        data: countryData.complexity.data,
+                        backgroundColor: countryData.complexity.backgroundColor
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: { color: colors.grid },
+                            ticks: { color: colors.text }
+                        },
+                        y: {
+                            grid: { color: colors.grid },
+                            ticks: { color: colors.text }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            function updateCountryChart(metric) {
+                const data = countryData[metric];
+                window.countryBarChart.data.datasets[0].data = data.data;
+                window.countryBarChart.data.datasets[0].label = data.label;
+                window.countryBarChart.update();
+            }
+
+            document.getElementById('metric-selector').addEventListener('change', (e) => {
+                updateCountryChart(e.target.value);
+            });
+
             document.getElementById('runPredictionBtn').addEventListener('click', () => {
-                if (lstmChart.data.datasets.length > 1) {
-                    lstmChart.data.datasets.pop();
+                if (window.lstmChart.data.datasets.length > 1) {
+                    window.lstmChart.data.datasets.pop();
                 }
                  
                 setTimeout(() => {
@@ -593,8 +802,8 @@ void updateQ_table(int state, int action, double reward, int next_state) {
                         borderDash: [5, 5],
                         tension: 0.1
                     };
-                    lstmChart.data.datasets.push(predictedDataset);
-                    lstmChart.update();
+                    window.lstmChart.data.datasets.push(predictedDataset);
+                    window.lstmChart.update();
                 }, 200);
             });
 
@@ -608,6 +817,7 @@ void updateQ_table(int state, int action, double reward, int next_state) {
             
             renderKatex();
             updateNav();
+            updateModelTabs();
         });
     </script>
 </body>
