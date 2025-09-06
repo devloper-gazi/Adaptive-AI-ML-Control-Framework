@@ -16,7 +16,7 @@ The system demonstrates the **Seebeck effect** and analyses performance across *
 
 ## ▶️ Usage
 
-Demo [the live demonstration](https://devloper-gazi.github.io/Adaptive-AI-ML-Control-Framework/) in a modern browser to begin exploration, or clone the repository and launch `index.html` locally.
+Open [the live demonstration](https://devloper-gazi.github.io/Adaptive-AI-ML-Control-Framework/) in a modern browser to begin exploration, or clone the repository and launch `index.html` locally.
 
 ## 📜 Licence
 MIT Licence – free for academic and educational use.
