@@ -22,8 +22,8 @@ The framework creates a **closed-loop system** that continuously learns from dat
 - **Switzerland** 🇨🇭: Precision manufacturing (robotics)
 - **UK** 🇬🇧: Healthcare (insulin delivery)
 
-## Demo 💻
+## Presentation 💻
 
-Check out the live demo: [https://devloper-gazi.github.io/Adaptive-AI-ML-Control-Framework/](https://devloper-gazi.github.io/Adaptive-AI-ML-Control-Framework/)
+Check out the live presentation: [https://devloper-gazi.github.io/Adaptive-AI-ML-Control-Framework/](https://devloper-gazi.github.io/Adaptive-AI-ML-Control-Framework/)
 
 The demo includes interactive visualizations of LSTM predictions and RL algorithms, with dark/light theme support.
