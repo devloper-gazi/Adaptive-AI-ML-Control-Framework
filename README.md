@@ -10,9 +10,9 @@ The system demonstrates the **Seebeck effect** and analyses performance across *
 - 🌓 Light/Dark mode interface  
 
 ## 🛠️ Technologies
-- 🌐 HTML5, TailwindCSS  
-- 📈 Chart.js  
-- 🔢 KaTeX  
+- 🌐 Global Research
+- 📈 Comparative Presentation
+- 🔢 Interactive
 
 ## ▶️ Usage
 
